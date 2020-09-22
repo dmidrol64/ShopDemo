@@ -1,5 +1,5 @@
 ﻿@model IEnumerable<MvcCore.Models.ProductType>
-
+@using System.Web
 @{
     ViewData["Title"] = "Index";
 }
@@ -33,10 +33,10 @@
         <tbody>
             @foreach (var item in Model)
             {
-            <tr>
-                <td>@Html.DisplayFor(x => item.Name)</td>
-                <td>EDIT | DELETE | UPDATE</td>
-            </tr>
+                <tr>
+                    <td>@Html.DisplayFor(x => item.Name)</td>
+                    <td><a class="btn btn-primary" href="@HttpUtility.UrlDecode(Url.Action($"Edit/{item.Id}"))">EDIT</a>| DELETE | UPDATE</td>
+                </tr>
             }
         </tbody>
     </table>

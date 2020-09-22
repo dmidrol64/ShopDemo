@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MvcCore.Data;
@@ -57,6 +58,44 @@ namespace MvcCore.Areas.Admin.Controllers
             }
 
             // 2. Если модель не валидная, возвращаем текущее представление (Create) с моделью для исправление ошибок
+            return View(productType);
+        }
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+
+            }
+            var edit = await _db.ProductTypes.FindAsync(id);
+
+            if(edit == null)
+            {
+                return NotFound();
+            }
+            return View(edit);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+
+        public async Task<IActionResult> Edit(ProductType productType, int? id)
+        {
+            if(productType.Id != id)
+            {
+                return NotFound();
+            }
+            //var edit = _db.ProductTypes.Where(ed => ed.Id == id).FirstOrDefault();
+            if (ModelState.IsValid)
+            {
+                _db.Update(productType);
+
+                await _db.SaveChangesAsync();
+
+                TempData["SM"] = $"Product type: {productType.Name} Updated successful!";
+
+                return RedirectToAction(nameof(Index));
+            }
             return View(productType);
         }
     }
